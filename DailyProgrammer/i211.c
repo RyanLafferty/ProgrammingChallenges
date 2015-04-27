@@ -16,15 +16,16 @@ See link for description.
 
 typedef struct space
 {
-	int value;
+	char value;
 	int editable;
 	int openSpace[4];
+	int dis;
 }space;
 
 void initGrid(space puzzle[10][10]);
 void copyGrid(space puzzle[10][10]);
 void detectOpenSpace(space puzzle[10][10]);
-
+void solve(space puzzle[10][10]);
 
 int main(int argc, char *argv[]) 
 {
@@ -48,6 +49,29 @@ int main(int argc, char *argv[])
 	}
 	
 	detectOpenSpace(puzzle);
+	
+	for(i = 0; i < 10; i++)
+	{
+		for(j = 0; j < 10; j++)
+		{
+			printf("i = %d j = %d open values = %d %d %d %d\n", i, j, 
+			puzzle[i][j].openSpace[0], puzzle[i][j].openSpace[1], puzzle[i][j].openSpace[2], puzzle[i][j].openSpace[3]);
+		}
+		printf("\n");
+	}
+	
+	
+	solve(puzzle);
+	
+	printf("\n\nSolved\n======\n\n");
+	for(i = 0; i < 10; i++)
+	{
+		for(j = 0; j < 10; j++)
+		{
+			printf("%c", puzzle[i][j].value);
+		}
+		printf("\n");
+	}
 }
 
 /*
@@ -75,6 +99,7 @@ void initGrid(space puzzle[10][10])
 			}
 			puzzle[i][j].editable = 1;
 			puzzle[i][j].value = 0;
+			puzzle[i][j].dis = 0;
 		}
 	}
 
@@ -171,7 +196,7 @@ void detectOpenSpace(space puzzle[10][10])
 			}
 			else
 			{
-				puzzle[i][j].openSpace[0] = 0;
+				puzzle[i][j].openSpace[1] = 0;
 			}
 			
 			if((j - 1) >= 0)
@@ -187,7 +212,7 @@ void detectOpenSpace(space puzzle[10][10])
 			}
 			else
 			{
-				puzzle[i][j].openSpace[0] = 0;
+				puzzle[i][j].openSpace[2] = 0;
 			}
 			
 			if((j + 1) < 10)
@@ -203,8 +228,311 @@ void detectOpenSpace(space puzzle[10][10])
 			}
 			else
 			{
-				puzzle[i][j].openSpace[0] = 0;
+				puzzle[i][j].openSpace[3] = 0;
 			}
 		}
+	}
+}
+
+void solve(space puzzle[10][10])
+{
+	char stack[10000];
+	char prev[10000];
+	char dir;
+	int i;
+	int dollar;
+	int found;
+	int solved;
+	int empty;
+	int blocked;
+	int fall;
+	int p1[2];
+	int p2[2];
+	int p3[2];
+	int p4[2];
+	
+	i = 0;
+	dollar = 0;
+	found = 0;
+	solved = 0;
+	empty = 0;
+	dir = 0;
+	blocked = 0;
+	fall = 0;
+	
+	//p1p2
+	//p3p4
+	
+	p1[0] = 0;
+	p1[1] = 0;
+	p2[0] = 0;
+	p2[1] = 1;
+	p3[0] = 1;
+	p3[1] = 0;
+	p4[0] = 1;
+	p4[1] = 1;
+	
+	for(i = 0; i < 10000; i++)
+	{
+		stack[i] = 0;
+		prev[i] = 0;
+	}
+	
+	while(empty == 0 && solved == 0)
+	{
+		printf("p1 = %d %d p2 =  %d %d p3 = %d %d p4 = %d %d\n",
+		p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
+		blocked = 1;
+		//check directions
+		if((p1[0] - 1) >= 0 && (p2[0] - 1) >= 0 && dir != 'd' && fall != 1)
+		{
+			if(puzzle[p1[0] - 1][p1[1]].value != 'O' && puzzle[p2[0] - 1][p2[1]].value != 'O')
+			{
+				for(i = 9999; i > 0; i--)
+				{
+					stack[i] = stack[i-1];
+				}
+				stack[0] = 'u';
+				prev[0] = dir;
+				blocked = 0;
+			}
+		}
+		if((p3[0] + 1) < 10 && (p4[0] + 1) < 10 && dir != 'u' && fall != 1)
+		{
+			if(puzzle[p3[0] + 1][p3[1]].value != 'O' && puzzle[p4[0] + 1][p4[1]].value != 'O')
+			{
+				for(i = 9999; i > 0; i--)
+				{
+					stack[i] = stack[i-1];
+				}
+				stack[0] = 'd';
+				prev[0] = dir;
+				blocked = 0;
+			}
+		}
+		if((p1[1] - 1) >= 0 && (p3[1] - 1) >= 0 && dir != 'r' && fall != 1)
+		{
+			if(puzzle[p1[0]][p1[1] - 1].value != 'O' && puzzle[p3[0]][p3[1] - 1].value != 'O')
+			{
+				for(i = 9999; i > 0; i--)
+				{
+					stack[i] = stack[i-1];
+				}
+				stack[0] = 'l';
+				prev[0] = dir;
+				blocked = 0;
+			}
+		}
+		if((p4[1] + 1) < 10 && (p2[1] + 1) < 10 && dir != 'l' && fall != 1)
+		{
+			if(puzzle[p4[0]][p4[1] + 1].value != 'O' && puzzle[p2[0]][p2[1] + 1].value != 'O')
+			{
+				for(i = 9999; i > 0; i--)
+				{
+					stack[i] = stack[i-1];
+				}
+				stack[0] = 'r';
+				prev[0] = dir;
+				blocked = 0;
+			}
+		}
+		
+		/*if(puzzle[p1[0]][p1[1]].openSpace[0] == 1 && puzzle[p2[0]][p2[1]].openSpace[0] == 1)
+		{
+			for(i = 9999; i > 0; i--)
+			{
+				stack[i] = stack[i-1];
+			}
+			stack[0] = 'u';
+			prev[0] = dir;
+			blocked = 0;
+		}
+		if(puzzle[p3[0]][p3[1]].openSpace[1] == 1 && puzzle[p4[0]][p4[1]].openSpace[1] == 1)
+		{
+			for(i = 9999; i > 0; i--)
+			{
+				stack[i] = stack[i-1];
+			}
+			stack[0] = 'd';
+			prev[0] = dir;
+			blocked = 0;
+		}
+		if(puzzle[p1[0]][p1[1]].openSpace[2] == 1 && puzzle[p3[0]][p3[1]].openSpace[2] == 1)
+		{
+			for(i = 9999; i > 0; i--)
+			{
+				stack[i] = stack[i-1];
+			}
+			stack[0] = 'l';
+			prev[0] = dir;
+			blocked = 0;
+		}
+		if(puzzle[p4[0]][p4[1]].openSpace[3] == 1 && puzzle[p2[0]][p2[1]].openSpace[3] == 1)
+		{
+			for(i = 9999; i > 0; i--)
+			{
+				stack[i] = stack[i-1];
+			}
+			stack[0] = 'r';
+			prev[0] = dir;
+			blocked = 0;
+		}*/
+
+		printf("Stack0 = %c\n", stack[0]);
+		
+		if(stack[0] == 0 || stack[999] != 0)
+		{
+			empty = 1;
+		}
+		else
+		{
+			if(prev[0] != 0 && blocked == 1)
+			{
+				fall++;
+				//reverse direction
+				switch(prev[0])
+				{
+					case 'u':
+					{
+						puzzle[p1[0]][p1[1]].value = '.';
+						puzzle[p2[0]][p2[1]].value = '.';
+						p1[0]++;
+						p2[0]++;
+						p3[0]++;
+						p4[0]++;
+						break;
+					}
+					case 'd':
+					{
+						puzzle[p3[0]][p3[1]].value = '.';
+						puzzle[p4[0]][p4[1]].value = '.';
+						p1[0]--;
+						p2[0]--;
+						p3[0]--;
+						p4[0]--;
+						break;
+					}
+					case 'l':
+					{
+						puzzle[p1[0]][p1[1]].value = '.';
+						puzzle[p3[0]][p3[1]].value = '.';
+						p1[1]++;
+						p2[1]++;
+						p3[1]++;
+						p4[1]++;
+						break;
+					}
+					case 'r':
+					{
+						puzzle[p2[0]][p2[1]].value = '.';
+						puzzle[p4[0]][p4[1]].value = '.';
+						p1[1]--;
+						p2[1]--;
+						p3[1]--;
+						p4[1]--;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				fall = 0;
+			}
+			switch(stack[0])
+			{
+				case 'u':
+				{
+					dir = 'u';
+					p1[0]--;
+					p2[0]--;
+					p3[0]--;
+					p4[0]--;
+					if(puzzle[p1[0]][p1[1]].value == '$' || puzzle[p2[0]][p2[1]].value == '$')
+					{
+						dollar = 1;
+					}
+					puzzle[p1[0]][p1[1]].value = '&';
+					puzzle[p2[0]][p2[1]].value = '&';
+					break;	
+				}
+				case 'd':
+				{
+					dir = 'd';
+					p1[0]++;
+					p2[0]++;
+					p3[0]++;
+					p4[0]++;
+					if(puzzle[p3[0]][p3[1]].value == '$' || puzzle[p4[0]][p4[1]].value == '$')
+					{
+						dollar = 1;
+					}
+					puzzle[p3[0]][p3[1]].value = '&';
+					puzzle[p4[0]][p4[1]].value = '&';
+					break;	
+				}
+				case 'l':
+				{
+					dir = 'l';
+					p1[1]--;
+					p2[1]--;
+					p3[1]--;
+					p4[1]--;
+					if(puzzle[p1[0]][p1[1]].value == '$' || puzzle[p3[0]][p3[1]].value == '$')
+					{
+						dollar = 1;
+					}
+					puzzle[p1[0]][p1[1]].value = '&';
+					puzzle[p3[0]][p3[1]].value = '&';
+					break;	
+				}
+				case 'r':
+				{
+					dir = 'r';
+					p1[1]++;
+					p2[1]++;
+					p3[1]++;
+					p4[1]++;
+					if(puzzle[p2[0]][p2[1]].value == '$' || puzzle[p4[0]][p4[1]].value == '$')
+					{
+						dollar = 1;
+					}
+					puzzle[p4[0]][p4[1]].value = '&';
+					puzzle[p2[0]][p2[1]].value = '&';
+					break;	
+				}
+				
+				default:
+				{
+					empty = 1;
+					break;		
+				}
+			}
+			for(i = 0; i < 9999; i++)
+			{
+				stack[i] = stack[i+1];
+				prev[i] = prev[i+1];
+			}
+		}
+		
+		if(dollar == 1)
+		{
+			solved = 1;
+		}	
+		
+		//printf("Stack = %s\n", stack);
+		
+		int r, y;
+		for(r = 0; r < 10; r++)
+		{
+			for(y = 0; y < 10; y++)
+			{
+				printf("%c", puzzle[r][y].value);
+			}
+			printf("\n");
+		}	
 	}
 }
