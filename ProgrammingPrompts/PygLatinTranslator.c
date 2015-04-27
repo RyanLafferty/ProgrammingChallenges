@@ -1,7 +1,7 @@
 /*
 Ryan Lafferty
 =============
-/r/ProgrammingPrompts - Breaking a stick to form a triangle
+/r/ProgrammingPrompts - pyglatin translator
 http://www.reddit.com/r/ProgrammingPrompts/comments/31gl36/easy_create_a_pyglatin_translator/
 ***********************************************************************************************************
 For those of you who dont know, pyglatin is a fictional language, where the first letter of a word is moved 
