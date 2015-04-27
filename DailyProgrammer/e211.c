@@ -2,7 +2,8 @@
 Ryan Lafferty
 =============
 /r/DailyProgrammer - easy #211 - name game
-http://www.reddit.com/r/dailyprogrammer/comments/338p28/20150420_challenge_211_easy_the_name_game/***********************************************************************************************************
+http://www.reddit.com/r/dailyprogrammer/comments/338p28/20150420_challenge_211_easy_the_name_game
+***********************************************************************************************************
 See link for description.
 ***********************************************************************************************************
 */
