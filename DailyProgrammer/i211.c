@@ -275,26 +275,6 @@ void solve(space puzzle[10][10])
 	p4[0] = 1;
 	p4[1] = 1;
 	
-	/*p1[0] = 8;
-	p1[1] = 8;
-	p2[0] = 8;
-	p2[1] = 9;
-	p3[0] = 9;
-	p3[1] = 8;
-	p4[0] = 9;
-	p4[1] = 9;*/
-	
-	/*p1[0] = 0;
-	p1[1] = 1;
-	p2[0] = 0;
-	p2[1] = 2;
-	p3[0] = 1;
-	p3[1] = 1;
-	p4[0] = 1;
-	p4[1] = 2;*/
-	
-	//mark init locations as visited
-	
 	for(i = 0; i < 10000; i++)
 	{
 		stack[i] = 0;
@@ -363,47 +343,6 @@ void solve(space puzzle[10][10])
 				blocked = 0;
 			}
 		}
-		
-		/*if(puzzle[p1[0]][p1[1]].openSpace[0] == 1 && puzzle[p2[0]][p2[1]].openSpace[0] == 1)
-		{
-			for(i = 9999; i > 0; i--)
-			{
-				stack[i] = stack[i-1];
-			}
-			stack[0] = 'u';
-			prev[0] = dir;
-			blocked = 0;
-		}
-		if(puzzle[p3[0]][p3[1]].openSpace[1] == 1 && puzzle[p4[0]][p4[1]].openSpace[1] == 1)
-		{
-			for(i = 9999; i > 0; i--)
-			{
-				stack[i] = stack[i-1];
-			}
-			stack[0] = 'd';
-			prev[0] = dir;
-			blocked = 0;
-		}
-		if(puzzle[p1[0]][p1[1]].openSpace[2] == 1 && puzzle[p3[0]][p3[1]].openSpace[2] == 1)
-		{
-			for(i = 9999; i > 0; i--)
-			{
-				stack[i] = stack[i-1];
-			}
-			stack[0] = 'l';
-			prev[0] = dir;
-			blocked = 0;
-		}
-		if(puzzle[p4[0]][p4[1]].openSpace[3] == 1 && puzzle[p2[0]][p2[1]].openSpace[3] == 1)
-		{
-			for(i = 9999; i > 0; i--)
-			{
-				stack[i] = stack[i-1];
-			}
-			stack[0] = 'r';
-			prev[0] = dir;
-			blocked = 0;
-		}*/
 
 		printf("Stack0 = %c\n", stack[0]);
 		
