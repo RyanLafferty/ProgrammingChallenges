@@ -13,6 +13,7 @@ See link for description.
 
 //openspace values
 //u,d,l,r
+//TODO add visited flag to spaces and if both spaces have been visited do not add them to the queue
 
 typedef struct space
 {
@@ -260,6 +261,8 @@ void solve(space puzzle[10][10])
 	blocked = 0;
 	fall = 0;
 	
+	//add finding starting location method
+	
 	//p1p2
 	//p3p4
 	
@@ -271,6 +274,26 @@ void solve(space puzzle[10][10])
 	p3[1] = 0;
 	p4[0] = 1;
 	p4[1] = 1;
+	
+	/*p1[0] = 8;
+	p1[1] = 8;
+	p2[0] = 8;
+	p2[1] = 9;
+	p3[0] = 9;
+	p3[1] = 8;
+	p4[0] = 9;
+	p4[1] = 9;*/
+	
+	/*p1[0] = 0;
+	p1[1] = 1;
+	p2[0] = 0;
+	p2[1] = 2;
+	p3[0] = 1;
+	p3[1] = 1;
+	p4[0] = 1;
+	p4[1] = 2;*/
+	
+	//mark init locations as visited
 	
 	for(i = 0; i < 10000; i++)
 	{
@@ -284,9 +307,10 @@ void solve(space puzzle[10][10])
 		p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
 		blocked = 1;
 		//check directions
-		if((p1[0] - 1) >= 0 && (p2[0] - 1) >= 0 && dir != 'd' && fall != 1)
+		if((p1[0] - 1) >= 0 && (p2[0] - 1) >= 0)
 		{
-			if(puzzle[p1[0] - 1][p1[1]].value != 'O' && puzzle[p2[0] - 1][p2[1]].value != 'O')
+			if(puzzle[p1[0] - 1][p1[1]].value != 'O' && puzzle[p2[0] - 1][p2[1]].value != 'O'
+			&& (puzzle[p1[0] - 1][p1[1]].dis == 0 || puzzle[p2[0] - 1][p2[1]].dis == 0))
 			{
 				for(i = 9999; i > 0; i--)
 				{
@@ -297,9 +321,10 @@ void solve(space puzzle[10][10])
 				blocked = 0;
 			}
 		}
-		if((p3[0] + 1) < 10 && (p4[0] + 1) < 10 && dir != 'u' && fall != 1)
+		if((p3[0] + 1) < 10 && (p4[0] + 1) < 10)
 		{
-			if(puzzle[p3[0] + 1][p3[1]].value != 'O' && puzzle[p4[0] + 1][p4[1]].value != 'O')
+			if(puzzle[p3[0] + 1][p3[1]].value != 'O' && puzzle[p4[0] + 1][p4[1]].value != 'O'
+			&& (puzzle[p3[0] + 1][p3[1]].dis == 0 || puzzle[p4[0] + 1][p4[1]].dis == 0))
 			{
 				for(i = 9999; i > 0; i--)
 				{
@@ -310,9 +335,10 @@ void solve(space puzzle[10][10])
 				blocked = 0;
 			}
 		}
-		if((p1[1] - 1) >= 0 && (p3[1] - 1) >= 0 && dir != 'r' && fall != 1)
+		if((p1[1] - 1) >= 0 && (p3[1] - 1) >= 0)
 		{
-			if(puzzle[p1[0]][p1[1] - 1].value != 'O' && puzzle[p3[0]][p3[1] - 1].value != 'O')
+			if(puzzle[p1[0]][p1[1] - 1].value != 'O' && puzzle[p3[0]][p3[1] - 1].value != 'O'
+			&& (puzzle[p1[0]][p1[1] - 1].dis == 0 || puzzle[p3[0]][p3[1] - 1].dis == 0))
 			{
 				for(i = 9999; i > 0; i--)
 				{
@@ -323,9 +349,10 @@ void solve(space puzzle[10][10])
 				blocked = 0;
 			}
 		}
-		if((p4[1] + 1) < 10 && (p2[1] + 1) < 10 && dir != 'l' && fall != 1)
+		if((p4[1] + 1) < 10 && (p2[1] + 1) < 10)
 		{
-			if(puzzle[p4[0]][p4[1] + 1].value != 'O' && puzzle[p2[0]][p2[1] + 1].value != 'O')
+			if(puzzle[p4[0]][p4[1] + 1].value != 'O' && puzzle[p2[0]][p2[1] + 1].value != 'O'
+			&& (puzzle[p4[0]][p4[1] + 1].dis == 0 || puzzle[p2[0]][p2[1] + 1].dis == 0))
 			{
 				for(i = 9999; i > 0; i--)
 				{
@@ -380,7 +407,7 @@ void solve(space puzzle[10][10])
 
 		printf("Stack0 = %c\n", stack[0]);
 		
-		if(stack[0] == 0 || stack[999] != 0)
+		if(stack[0] == 0)
 		{
 			empty = 1;
 		}
@@ -446,62 +473,102 @@ void solve(space puzzle[10][10])
 			{
 				case 'u':
 				{
-					dir = 'u';
-					p1[0]--;
-					p2[0]--;
-					p3[0]--;
-					p4[0]--;
+					if(puzzle[p1[0] - 1][p1[1]].value != 'O' && puzzle[p2[0] - 1][p2[1]].value != 'O')
+					{
+						dir = 'u';
+						p1[0]--;
+						p2[0]--;
+						p3[0]--;
+						p4[0]--;
+					}
+					else
+					{
+						blocked = 1;
+					}
 					if(puzzle[p1[0]][p1[1]].value == '$' || puzzle[p2[0]][p2[1]].value == '$')
 					{
 						dollar = 1;
 					}
 					puzzle[p1[0]][p1[1]].value = '&';
 					puzzle[p2[0]][p2[1]].value = '&';
+					
+					puzzle[p1[0]][p1[1]].dis = 1;
+					puzzle[p2[0]][p2[1]].dis = 1;
 					break;	
 				}
 				case 'd':
 				{
-					dir = 'd';
-					p1[0]++;
-					p2[0]++;
-					p3[0]++;
-					p4[0]++;
+					if(puzzle[p3[0] + 1][p3[1]].value != 'O' && puzzle[p4[0] + 1][p4[1]].value != 'O')
+					{
+						dir = 'd';
+						p1[0]++;
+						p2[0]++;
+						p3[0]++;
+						p4[0]++;
+					}
+					else
+					{
+						blocked = 1;
+					}
 					if(puzzle[p3[0]][p3[1]].value == '$' || puzzle[p4[0]][p4[1]].value == '$')
 					{
 						dollar = 1;
 					}
 					puzzle[p3[0]][p3[1]].value = '&';
 					puzzle[p4[0]][p4[1]].value = '&';
+					
+					puzzle[p3[0]][p3[1]].dis = 1;
+					puzzle[p4[0]][p4[1]].dis = 1;
 					break;	
 				}
 				case 'l':
 				{
-					dir = 'l';
-					p1[1]--;
-					p2[1]--;
-					p3[1]--;
-					p4[1]--;
+					if(puzzle[p1[0]][p1[1] - 1].value != 'O' && puzzle[p3[0]][p3[1] - 1].value != 'O')
+					{
+						dir = 'l';
+						p1[1]--;
+						p2[1]--;
+						p3[1]--;
+						p4[1]--;
+					}
+					else
+					{
+						blocked = 1;
+					}
 					if(puzzle[p1[0]][p1[1]].value == '$' || puzzle[p3[0]][p3[1]].value == '$')
 					{
 						dollar = 1;
 					}
 					puzzle[p1[0]][p1[1]].value = '&';
 					puzzle[p3[0]][p3[1]].value = '&';
+					
+					puzzle[p1[0]][p1[1]].dis = 1;
+					puzzle[p3[0]][p3[1]].dis = 1;
 					break;	
 				}
 				case 'r':
 				{
-					dir = 'r';
-					p1[1]++;
-					p2[1]++;
-					p3[1]++;
-					p4[1]++;
+					if(puzzle[p4[0]][p4[1] + 1].value != 'O' && puzzle[p2[0]][p2[1] + 1].value != 'O')
+					{
+						dir = 'r';
+						p1[1]++;
+						p2[1]++;
+						p3[1]++;
+						p4[1]++;
+					}
+					else
+					{
+						blocked = 1;
+					}
 					if(puzzle[p2[0]][p2[1]].value == '$' || puzzle[p4[0]][p4[1]].value == '$')
 					{
 						dollar = 1;
 					}
 					puzzle[p4[0]][p4[1]].value = '&';
 					puzzle[p2[0]][p2[1]].value = '&';
+					
+					puzzle[p4[0]][p4[1]].dis = 1;
+					puzzle[p2[0]][p2[1]].dis = 1;
 					break;	
 				}
 				
@@ -523,7 +590,7 @@ void solve(space puzzle[10][10])
 			solved = 1;
 		}	
 		
-		//printf("Stack = %s\n", stack);
+		printf("Stack = %s\n", stack);
 		
 		int r, y;
 		for(r = 0; r < 10; r++)
